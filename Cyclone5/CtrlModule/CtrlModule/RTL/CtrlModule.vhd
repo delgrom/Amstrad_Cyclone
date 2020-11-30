@@ -598,24 +598,8 @@ end process;
 ioctl_download <= host_loadrom or host_loadmed;
  
 ioctl_file_ext(31 DOWNTO 0) <=  extension; --X"2E444154";
-img_size <= x"00000000" & size; --img_size <= x"0002F900";
-
-								--wire [1:0] st_scanlines = status[10:9];
-								--wire [2:0] st_palette = status[13:11];
-								--wire       st_sync_filter = status[3];
-								--wire       st_joyswap = status[18];
-								--wire       st_nowait = status[6];
-								--wire       st_cpc664 = status[4];
-								--wire       st_crtc = status[2];
-								--wire       st_distributor = status[5];
-								--wire [1:0] st_fdc = status[17:16]; //Disquetera TURBO 2'b01
-								--wire       st_tape_sound = status[20];
-								--wire       st_stereo = ~status[21];
-								--wire [1:0] st_mf2 = status[15:14];
-								--wire       st_mouse_en = status[19];
-								--wire       st_right_shift_mod = status[22];
-								--wire       st_keypad_mod = status[23];
-								--wire       st_playcity_ena = status[24];
+img_size <= x"00000000" & size; 
+--img_size <= x"00000000" & x"0002F900";
 
 status(0)<=host_reset;
 status(1)<='0';

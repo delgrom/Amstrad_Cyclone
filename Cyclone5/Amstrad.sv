@@ -923,12 +923,15 @@ wire dsk_wr;
 wire [18:0] dsk_addr_s;
 wire [7:0] disk_data_s;
 
-assign sram_addr   = (dsk_download) ? ioctl_addr[18:0] : dsk_addr_s;
+assign sram_addr   = (dsk_download) ? ioctl_addr[18:0] : dsk_addr_s; 
 assign sram_data   = (dsk_download) ? ioctl_dout 	: 8'bzzzzzzzz;
 assign disk_data_s = sram_data;
 assign sram_we_n   = ~(dsk_download & ioctl_wr);
 
-
+//assign sram_addr   = (dsk_download) ? ioctl_addr[18:0] : 18'h2f8ff; //Usar en lugar de la original para comprobar que carga el disco entero en sram
+//assign LED = sram_data == 8'hE5 ? 1'b0 : 1'b1; //Lee el ultimo Byte del disco para comprobar que se ha grabado bien el SRAM
+//Esta comprobado que el disco se graba completo en SRAM
+//El controlador image_controller lee hasta el Track26 completo, y da error de lectura a partir del 27
 
 image_controller image_controller1
 (
