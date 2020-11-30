@@ -343,7 +343,7 @@ always @(posedge clk_sys) begin : fdc
 	//new image mounted
 	for(int i=0;i<2;i++) begin 
 		old_mounted[i] <= img_mounted[i];
-		if(~old_mounted[i] & img_mounted[i]) begin
+		if(old_mounted[i] & ~img_mounted[i]) begin
 			image_wp[i] <= img_wp;
 			image_size[i] <= img_size;
 			image_scan_state[i] <= {1'b0, |img_size};
