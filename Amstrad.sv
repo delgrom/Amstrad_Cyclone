@@ -21,6 +21,7 @@
 
 module Amstrad
 (
+`ifndef CYCLONE
 	input         SPI_DI,
 	input         SPI_SCK,
 	input         CONF_DATA0,
@@ -49,11 +50,86 @@ module Amstrad
 	output  [5:0] VGA_B,
 	output  [5:0] VGA_G,
 	output  [5:0] VGA_R
+`else
+   // Clocks
+	input wire	CLOCK_50,
+	
+	output wire LED,
+	
+	// SRAMs (AS7C34096)
+	output wire	[20:0]sram_addr,
+	inout wire	[7:0]sram_data,
+	output wire	sram_we_n,
+	output wire	sram_oe_n, //Neptuno
+	output wire	sram_lb_n, //Neptuno
+	output wire	sram_ub_n, //Neptuno
+	
+	// SDRAM	(H57V256)
+	output wire	[12:0] SDRAM_A, 
+	inout wire	[15:0] SDRAM_DQ, 
+	output wire	[1:0] SDRAM_BA, 
+	output wire	SDRAM_DQML, 
+	output wire	SDRAM_DQMH, 
+	output wire	SDRAM_nRAS,
+	output wire	SDRAM_nCAS, 
+	output wire	SDRAM_CKE, 
+	output wire	SDRAM_CLK, 
+	output wire	SDRAM_nCS,
+	output wire	SDRAM_nWE,
+
+	// PS2
+	inout wire	ps2_clk,
+	inout wire	ps2_data,
+	inout wire	ps2_mouse_clk,
+	inout wire	ps2_mouse_data,
+
+	// SD Card
+	output wire	sd_cs_n,
+	output wire	sd_sclk,
+	output wire	sd_mosi,
+	input wire	sd_miso,
+
+	// Joysticks
+`ifndef JOYDC
+	output wire	JOY_CLK,
+	output wire	JOY_LOAD,
+	input  wire JOY_DATA,
+	output wire JOY_SELEC,
+`else
+	input	wire [5:0]joystick1,
+	input	wire [5:0]joystick2,
+`endif	
+	// Audio
+	output wire	AUDIO_L,
+	output wire	AUDIO_R,
+	input wire	UART_RX, //EAR_IN
+	output wire	UART_TX, //MOTOR_OUT
+
+	output wire	MCLK,
+	output wire	SCLK,
+	output wire	LRCLK,
+	output wire	SDIN,
+	
+		// VGA
+	output wire	[5:0]VGA_R, 
+	output wire	[5:0]VGA_G, 
+	output wire	[5:0]VGA_B, 
+	output wire	VGA_HS, 
+	output wire	VGA_VS,
+
+	output wire VGA_BLANK, //Reloaded
+	output wire VGA_CLOCK, //Reloaded
+	
+	output wire stm_rst_o
+`endif	
 );
 
 //////////////////////////////////////////////////////////////////////////
 
-assign LED = ~mf2_en & ~ioctl_download & ~(tape_motor & tape_motor_led);
+assign LED = ~ioctl_download; //~mf2_en & ~ioctl_download & ~(tape_motor & tape_motor_led);
+assign stm_rst_o = 1'b0; 
+assign VGA_BLANK = 1'b1;
+assign VGA_CLOCK = clk_sys;
 
 `include "build_id.v"
 localparam CONF_STR = {
@@ -109,7 +185,11 @@ wire locked;
 
 pll pll
 (
+`ifndef CYCLONE
 	.inclk0(CLOCK_27),
+`else
+	.inclk0(CLOCK_50),
+`endif
 	.c0(clk_sys),
 	.locked(locked)
 );
@@ -165,14 +245,22 @@ reg         mouse_strobe_level;
 always @(posedge clk_sys) if (mouse_strobe) mouse_strobe_level <= ~mouse_strobe_level;
 
 wire  [1:0] buttons;
+
+`ifndef JOYDC
 wire  [6:0] joy1;
 wire  [6:0] joy2;
+`else
+wire  [6:0] joy1 = ~{1'b1,joystick1};
+wire  [6:0] joy2 = ~{1'b1,joystick2};
+`endif
+
 wire [31:0] status;
 
 wire        scandoubler_disable;
 wire        ypbpr;
 wire        no_csync;
 
+`ifndef CYCLONE
 user_io #(.STRLEN($size(CONF_STR)>>3)) user_io
 (
 	.clk_sys(clk_sys),
@@ -233,7 +321,79 @@ data_io data_io
 	.ioctl_index(ioctl_index),
 	.ioctl_fileext(ioctl_file_ext)
 );
+`else
+wire [7:0]R_OSD,G_OSD,B_OSD;
+wire host_divert_keyboard, host_scandoubler_disable;
 
+data_io data_io
+(
+	.clk(clk_sys),
+	.CLOCK_50(CLOCK_50), //Para modulos de I2s y Joystick
+	
+	.debug(debug),
+	
+	.reset_n(locked),
+
+	.vga_hsync(hs),
+	.vga_vsync(vs),
+	
+	.red_i(R),
+	.green_i(G),
+	.blue_i(B),
+	.red_o(R_OSD),
+	.green_o(G_OSD),
+	.blue_o(B_OSD),
+	
+	.ps2k_clk_in(ps2_clk),
+	.ps2k_dat_in(ps2_data),
+	.key_strobe(key_strobe),
+	.key_code(key_code),
+	.key_pressed(key_pressed),
+	.key_extended(key_extended),
+
+	.host_scandoubler_disable(host_scandoubler_disable),
+`ifndef JOYDC
+	.JOY_CLK(JOY_CLK),
+	.JOY_LOAD(JOY_LOAD),
+	.JOY_DATA(JOY_DATA),
+	.JOY_SELECT(JOY_SELECT),
+	.joy1(joy1),
+	.joy2(joy2),
+`endif
+	.dac_MCLK(MCLK),
+	.dac_LRCK(LRCLK),
+	.dac_SCLK(SCLK),
+	.dac_SDIN(SDIN),
+	.L_data({1'b0, audio_l,5'b00000} + {1'b0, playcity_audio_l,5'b00000} + (st_tape_sound ? {tape_rec, tape_play, 7'd0} : 0)),
+	.R_data({1'b0, audio_r,5'b00000} + {1'b0, playcity_audio_r,5'b00000} + (st_tape_sound ? {tape_rec, tape_play, 7'd0} : 0)),
+	
+	.spi_miso(sd_miso),
+	.spi_mosi(sd_mosi),
+	.spi_clk(sd_sclk),
+	.spi_cs(sd_cs_n),
+
+	.img_mounted(img_mounted),
+	.img_size(img_size),
+	.img_readonly(img_readonly),
+	
+	.status(status),
+	
+	//.conf_str		( CONF_STR ),
+	//.data_in			( osd_s & keys_s ),
+	//.menu_in			( menu_in ),
+	//.config_buffer_o (),
+
+	.ioctl_ce(ce_boot),
+	.ioctl_wr(ioctl_wr),
+	.ioctl_addr(ioctl_addr),
+	.ioctl_dout(ioctl_dout),
+	.ioctl_download(ioctl_download),
+	.ioctl_index(ioctl_index),
+	.ioctl_file_ext(ioctl_file_ext)
+);
+
+wire        dsk_download  = ioctl_download && (ioctl_index == 8'd1);
+`endif
 wire        rom_download  = ioctl_download && (ioctl_index == 8'd0);
 wire        ext_download  = ioctl_download && (ioctl_index == 8'd3);
 wire        tape_download = ioctl_download && (ioctl_index == 8'd4);
@@ -331,7 +491,11 @@ wire  [7:0] ram_dout;
 wire [15:0] vram_dout;
 wire [14:0] vram_addr;
 
+`ifndef CYCLONE
 assign SDRAM_CLK = clk_sys;
+`else
+assign SDRAM_CLK = !clk_sys;
+`endif
 
 sdram sdram
 (
@@ -762,10 +926,15 @@ mist_video #(.SD_HCNT_WIDTH(10), .OSD_X_OFFSET(10'd18)) mist_video (
 	.blend       ( 1'b0       ),
 
 	// video in
+`ifndef CYCLONE
 	.R           ( blank ? 6'd0 : R[7:2] ),
 	.G           ( blank ? 6'd0 : G[7:2] ),
 	.B           ( blank ? 6'd0 : B[7:2] ),
-
+`else
+	.R           ( blank ? 6'd0 : R_OSD[7:2] ),
+	.G           ( blank ? 6'd0 : G_OSD[7:2] ),
+	.B           ( blank ? 6'd0 : B_OSD[7:2] ),
+`endif
 	.HSync       ( ~HSync     ),
 	.VSync       ( ~VSync     ),
 
@@ -817,4 +986,38 @@ always @(posedge clk_sys) begin
 	tape_play <= (ear_autostop_cnt != 0) ? tape_in : tape_read;
 end
 
+/// CAMBIOS
+wire dsk_wr;
+wire [18:0] dsk_addr_s;
+wire [7:0] disk_data_s;
+
+assign sram_addr   = (dsk_download) ? ioctl_addr[18:0] : dsk_addr_s; 
+assign sram_data   = (dsk_download) ? ioctl_dout 	: 8'bzzzzzzzz;
+assign disk_data_s = sram_data;
+assign sram_we_n   = ~(dsk_download & ioctl_wr);
+assign sram_oe_n   = 1'b0;
+assign sram_lb_n   = 1'b0;
+assign sram_ub_n   = 1'b1;
+
+`ifdef CYCLONE
+image_controller image_controller1
+(
+    
+		.clk_i			( ce_16 ),
+		.reset_i		( reset ),
+ 	 
+		.sd_lba			( sd_lba ), 
+		.sd_rd			( sd_rd ),
+		.sd_wr			( sd_wr ),
+
+		.sd_ack			( sd_ack ),
+		.sd_buff_addr	( sd_buff_addr ), 
+		.sd_buff_dout	( sd_buff_dout ), 
+		.sd_buff_din	( sd_buff_din ),
+		.sd_buff_wr		( sd_buff_wr ),
+		
+		.sram_addr_o  	( dsk_addr_s ),
+		.sram_data_i   ( disk_data_s )
+);
+`endif
 endmodule

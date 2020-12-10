@@ -47,7 +47,8 @@ set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
 set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
 set_global_assignment -name ERROR_CHECK_FREQUENCY_DIVISOR 1
 
-
+#VARIABLES
+set_global_assignment -name VERILOG_MACRO "CYCLONE=1"
 
 # pin & location assignments
 # ==========================
@@ -401,7 +402,7 @@ set_global_assignment -name CUSP_FILE ../GA40010/ga40010_tb.cpp
 set_global_assignment -name SYSTEMVERILOG_FILE ../GA40010/ga40010.sv
 set_global_assignment -name VERILOG_FILE ../GA40010/casgen_sync.v
 set_global_assignment -name VERILOG_FILE ../GA40010/casgen.v
-set_global_assignment -name VERILOG_FILE ../CtrlModule/modules/joydecoder_neptuno.v
+set_global_assignment -name VERILOG_FILE ../CtrlModule/modules/joydecoder_cyclone5.v
 set_global_assignment -name SDC_FILE Amstrad.sdc
 set_global_assignment -name VHDL_FILE ../t80/T80pa.vhd
 set_global_assignment -name VHDL_FILE ../t80/T80_Reg.vhd
@@ -426,7 +427,7 @@ set_global_assignment -name VERILOG_FILE ../UM6845R.v
 set_global_assignment -name SYSTEMVERILOG_FILE ../Amstrad_GA.sv
 set_global_assignment -name VERILOG_FILE ../Amstrad_MMU.v
 set_global_assignment -name VERILOG_FILE ../Amstrad_motherboard.v
-set_global_assignment -name SYSTEMVERILOG_FILE Amstrad.sv
+set_global_assignment -name SYSTEMVERILOG_FILE ../Amstrad.sv
 set_global_assignment -name VHDL_FILE ../tzxplayer.vhd
 set_global_assignment -name QIP_FILE pll.qip
 set_global_assignment -name SIP_FILE pll.sip
