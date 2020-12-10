@@ -199,7 +199,7 @@ wire  [6:0] joy1;
 wire  [6:0] joy2;
 wire [31:0] status;
 
-wire        scandoubler_disable;
+wire        scandoubler_disable = !host_scandoubler_disable;
 wire        ypbpr;
 wire        no_csync;
 /*
