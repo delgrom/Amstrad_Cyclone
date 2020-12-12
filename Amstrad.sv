@@ -990,6 +990,7 @@ always @(posedge clk_sys) begin
 	tape_play <= (ear_autostop_cnt != 0) ? tape_in : tape_read;
 end
 
+`ifdef CYCLONE
 /// CAMBIOS
 wire dsk_wr;
 wire [18:0] dsk_addr_s;
@@ -1003,7 +1004,6 @@ assign sram_oe_n   = 1'b0;
 assign sram_lb_n   = 1'b0;
 assign sram_ub_n   = 1'b1;
 
-`ifdef CYCLONE
 image_controller image_controller1
 (
     
