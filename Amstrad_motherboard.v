@@ -33,6 +33,7 @@ module Amstrad_motherboard
 
 	input  [24:0] ps2_mouse,
 	output        key_nmi,
+	output        key_reset,
 	output  [9:0] Fn,
 
 	input   [3:0] ppi_jumpers,
@@ -343,6 +344,7 @@ hid HID
 	.Y(portC[3:0]),
 	.X(kbd_out),
 	.key_nmi(key_nmi),
+	.key_reset(key_reset),
 	.Fn(Fn)
 );
 
