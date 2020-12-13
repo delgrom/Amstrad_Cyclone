@@ -259,7 +259,7 @@ wire [31:0] status;
 `ifndef CYCLONE
 wire        scandoubler_disable;
 `else
-wire        scandoubler_disable=host_scandoubler_disable;
+wire        scandoubler_disable=!host_scandoubler_disable;
 `endif
 wire        ypbpr;
 wire        no_csync;
