@@ -125,11 +125,13 @@ module Amstrad
 );
 
 //////////////////////////////////////////////////////////////////////////
-
-assign LED = ~ioctl_download; //~mf2_en & ~ioctl_download & ~(tape_motor & tape_motor_led);
+`ifdef CYCLONE
 assign stm_rst_o = 1'b0; 
 assign VGA_BLANK = 1'b1;
 assign VGA_CLOCK = clk_sys;
+`endif
+
+assign LED = ~ioctl_download; //~mf2_en & ~ioctl_download & ~(tape_motor & tape_motor_led);
 
 `include "build_id.v"
 localparam CONF_STR = {

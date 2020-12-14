@@ -370,7 +370,7 @@ int main(int argc,char **argv)
 		dipsw |= (MENU_CYCLE_VALUE(&topmenu[8])  & 0x1) << 10; //[10]
 		dipsw |= (MENU_CYCLE_VALUE(&topmenu[9])  & 0x1) << 11; //[11]
 		dipsw |= (MENU_CYCLE_VALUE(&topmenu[10]) & 0x1) << 12; //[12]
-		dipsw |= (MENU_CYCLE_VALUE(&topmenu[11]) & 0x2) << 13; //[14:13]
+		dipsw |= (MENU_CYCLE_VALUE(&topmenu[11]) & 0x3) << 13; //[14:13]
 		dipsw |= (MENU_CYCLE_VALUE(&topmenu[12]) & 0x1) << 15; //[15]
 		HW_HOST(REG_HOST_SW)=dipsw;	// Send the new values to the hardware.
 		// If the menu's visible, prevent keystrokes reaching the host core.
