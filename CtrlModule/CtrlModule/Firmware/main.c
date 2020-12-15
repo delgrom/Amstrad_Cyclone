@@ -207,15 +207,15 @@ static int LoadMED(const char *filename)
 {
 	int result=0;
 	int opened;
-	HW_HOST(REG_HOST_ROMSIZE) = file.size;
-	HW_HOST(REG_HOST_ROMEXT) = ((char)filename[10])+((char)filename[9]<<8)+((char)filename[8]<<16); //Pasa 24 Bits las 3 letras de la Extension en el registro de 31 bits (la primera en los bits 23:16 la segunda  en 15:7 y la tercera en 7:0	
-	HW_HOST(REG_HOST_CONTROL)=HOST_CONTROL_LOADMED|HOST_CONTROL_DIVERT_SDCARD;
 
 	if((opened=FileOpen(&file,filename)))
 	{
 		int filesize=file.size;
 		unsigned int c=0;
 		int bits;
+		HW_HOST(REG_HOST_ROMSIZE) = file.size;
+		HW_HOST(REG_HOST_ROMEXT) = ((char)filename[10])+((char)filename[9]<<8)+((char)filename[8]<<16); //Pasa 24 Bits las 3 letras de la Extension en el registro de 31 bits (la primera en los bits 23:16 la segunda  en 15:7 y la tercera en 7:0	
+		HW_HOST(REG_HOST_CONTROL)=HOST_CONTROL_LOADMED|HOST_CONTROL_DIVERT_SDCARD;
 
 		bits=0;
 		c=filesize-1;
