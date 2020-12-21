@@ -598,7 +598,7 @@ status(19)<=dipswitches(12); --st_mouse_en
 status(20)<=dipswitches(8); --st_tape_sound
 status(21)<=dipswitches(9); --st_stereo
 status(22)<=dipswitches(10); --st_right_shift_mod
-status(23)<='0'; --st_keypad_mod
+status(23)<='1'; --st_keypad_mod
 status(24)<=dipswitches(11); --st_playcity_ena
 status(31 downto 25) <= (others =>'0');
 
