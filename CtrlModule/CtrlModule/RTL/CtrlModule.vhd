@@ -288,6 +288,18 @@ port map (
 	recvByte => kbdrecvbyte
 );
 
+mykeyboardout : entity work.io_ps2_out
+port map
+(	
+	CLK      => clk, 
+	OSD_ENA  => host_divert_keyboard,
+	ps2_code => kbdrecvbyte(8 downto 1),
+	ps2_int  => kbdrecv,
+	ps2_key(10)  => key_strobe,
+	ps2_key(9)  => key_pressed,
+	ps2_key(8)  => key_extended,
+	ps2_key(7 downto 0) => key_code
+);	
 
 -- SPI Timer
 process(clk)
@@ -343,15 +355,6 @@ port map (
 int_triggers<=(0=>kbdrecv,
 					1=>vblank,
 					others => '0');
-
----- Detect vblank
---vblank<='1' when vga_vsync='0' and vga_vsync_d='1' else '0';
---process(clk,vga_vsync)
---begin
---	if rising_edge(clk) then
---		vga_vsync_d<=vga_vsync;
---	end if;
---end process;
 	
 process(clk,reset_n)
 begin
@@ -531,30 +534,6 @@ port map
 		window_out => open,
 		scanline_ena => '0'
 	);
-
-io_ps2_keyboard : entity work.io_ps2_keyboard
-port map
-(
-		clk		 => clk and ioctl_ce, 
-		kbd_clk	 => ps2k_clk_in and not host_divert_keyboard, 
-		kbd_dat	 => ps2k_dat_in, 		
-		interrupt => ps2_int,
-		scanCode	 => ps2_scan
-);
-	
-Keyboard : entity work.Keyboard
-port map
-(
-  Clk          => clk and ioctl_ce, 
-  KbdInt       => ps2_int,
-  KbdScanCode  => ps2_scan,
-  key_strobe   => key_strobe,
-  key_code     => key_code,
-  key_pressed  => key_pressed,
-  key_extended => key_extended,
-  osd_o			=> keys_s,
-  KEY_VIDEO    => open
-);
 
 joyystick : joydecoder 
 port map
