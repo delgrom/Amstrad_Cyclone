@@ -996,10 +996,10 @@ end
 `ifdef CYCLONE
 /// CAMBIOS
 wire dsk_wr;
-wire [18:0] dsk_addr_s;
+wire [19:0] dsk_addr_s;
 wire [7:0] disk_data_s;
 
-assign sram_addr   = (dsk_download) ? ioctl_addr[18:0] : dsk_addr_s; 
+assign sram_addr   = (dsk_download) ? ioctl_addr[19:0] : dsk_addr_s; 
 assign sram_data   = (dsk_download) ? ioctl_dout 	: 8'bzzzzzzzz;
 assign disk_data_s = sram_data;
 assign sram_we_n   = ~(dsk_download & ioctl_wr);

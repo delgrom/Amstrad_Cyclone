@@ -24,7 +24,7 @@ module image_controller
 	input			[ 7:0]	sd_buff_din,
 	output reg				sd_buff_wr,
 		                        
-	output reg 	[18:0]	sram_addr_o,
+	output reg 	[19:0]	sram_addr_o,
 	input			[ 7:0]	sram_data_i	
 
 );
@@ -46,7 +46,7 @@ typedef enum
 
 states_t state_s ;
 
-reg [18:0] sram_addr_s;
+reg [19:0] sram_addr_s;
 reg [16:0] sd_addr;
 
 assign	sd_buff_addr = sram_addr_s[8:0];
@@ -82,7 +82,7 @@ assign	sram_addr_o = sram_addr_s;
 											state_s <= P1;							
 											
 											sd_addr = sd_lba[16:0]; //(sd_lba[16:0] > 9'd256)? sd_lba[16:0] - 9'd256 : sd_lba[16:0]; // ATTENTION blocking assignment
-											sram_addr_s[18:9] =  sd_addr[9:0];
+											sram_addr_s[19:9] =  sd_addr[10:0];
 											sram_addr_s[8:0] = 9'b000000000;
 						
 										end
