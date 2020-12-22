@@ -381,12 +381,13 @@ set_global_assignment -name SMART_RECOMPILE ON
 set_global_assignment -name ON_CHIP_BITSTREAM_DECOMPRESSION OFF
 set_global_assignment -name PRE_FLOW_SCRIPT_FILE "quartus_sh:../build_id_verilog.tcl"
 set_global_assignment -name OPTIMIZATION_MODE "HIGH PERFORMANCE EFFORT"
+set_global_assignment -name VHDL_FILE ../CtrlModule/CtrlModule/RTL/io_ps2_out.vhd
+set_global_assignment -name VHDL_FILE ../CtrlModule/CtrlModule/RTL/io_ps2_com.vhd
 set_global_assignment -name VHDL_FILE ../CtrlModule/CtrlModule/RTL/dpram.vhd
 set_global_assignment -name VHDL_FILE ../CtrlModule/CtrlModule/RTL/spi.vhd
 set_global_assignment -name VHDL_FILE ../CtrlModule/CtrlModule/RTL/simple_uart.vhd
 set_global_assignment -name VHDL_FILE ../CtrlModule/CtrlModule/RTL/OSD_Overlay.vhd
 set_global_assignment -name VHDL_FILE ../CtrlModule/CtrlModule/RTL/OnScreenDisplay.vhd
-set_global_assignment -name VHDL_FILE ../CtrlModule/CtrlModule/RTL/io_ps2_com.vhd
 set_global_assignment -name VHDL_FILE ../CtrlModule/CtrlModule/RTL/interrupt_controller.vhd
 set_global_assignment -name VHDL_FILE ../CtrlModule/CtrlModule/RTL/DualPortRAM_2RW_1Clock_Unreg.vhd
 set_global_assignment -name VHDL_FILE ../CtrlModule/CtrlModule/RTL/Debounce.vhd
@@ -432,7 +433,6 @@ set_global_assignment -name VHDL_FILE ../t80/T80_ALU.vhd
 set_global_assignment -name VHDL_FILE ../t80/T80.vhd
 set_global_assignment -name SYSTEMVERILOG_FILE ../CtrlModule/modules/image_controller.sv
 set_global_assignment -name VHDL_FILE ../CtrlModule/modules/keyboard.vhd
-set_global_assignment -name VHDL_FILE ../CtrlModule/modules/io_ps2_keyboard.vhd
 set_global_assignment -name VERILOG_FILE ../sys/sigma_delta_dac.v
 set_global_assignment -name SYSTEMVERILOG_FILE ../u765.sv
 set_global_assignment -name VERILOG_FILE ../sdram.v
