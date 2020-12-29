@@ -175,7 +175,6 @@ set_location_assignment PIN_B4 -to AUDIO_R
 #EAR_IN
 set_location_assignment PIN_AA13 -to UART_RX
 
-#set_location_assignment PIN_ -to MCLK
 set_location_assignment PIN_M20 -to SCLK
 set_location_assignment PIN_AB14 -to LRCLK
 set_location_assignment PIN_AA15 -to SDIN

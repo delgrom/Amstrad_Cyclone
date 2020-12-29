@@ -170,10 +170,10 @@ set_location_assignment PIN_AA16 -to sram_data[0]
 
 set_location_assignment PIN_D21 -to sram_we_n
 
-#set_location_assignment PIN_A20 -to JOY_CLK
-#set_location_assignment PIN_B20 -to JOY_LOAD
-#set_location_assignment PIN_B19 -to JOY_DATA
-#set_location_assignment PIN_AA18 -to JOY_SELECT
+set_location_assignment PIN_A15 -to JOY_SELECT
+
+#EAR_IN
+set_location_assignment PIN_A20 -to UART_RX
 
 #set_location_assignment PIN_E7 -to AUDIO_L
 #set_location_assignment PIN_D6 -to AUDIO_R
